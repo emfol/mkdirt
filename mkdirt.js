@@ -13,6 +13,12 @@ const NOT_VIABLE = 0;
  * Interface
  */
 
+/**
+  * Make Directory Tree
+  *
+  * @param {string} path The path to the directory being created (parent directories will be created recursively)
+  * @param {number} mode The file mode number to be assigned to the directories being created
+  */
 async function mkdirt(path, mode) {
     const parent = dirname(path);
     if (parent !== path) {
