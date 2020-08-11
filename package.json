@@ -1,0 +1,36 @@
+{
+  "name": "mkdirt",
+  "version": "1.0.0",
+  "description": "Make Directory Tree (for those who need support for Node.js v8.x)",
+  "main": "mkdirt.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emfol/mkdirt.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "keywords": [
+    "mkdir",
+    "recursive",
+    "directory",
+    "mkdirt",
+    "tree"
+  ],
+  "author": "Emanuel F. Oliveira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emfol/mkdirt/issues"
+  },
+  "homepage": "https://github.com/emfol/mkdirt#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-plugin-jest": "^23.20.0",
+    "jest": "25.5.4"
+  }
+}
