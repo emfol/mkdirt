@@ -61,16 +61,18 @@ describe('mkdirt', () => {
             await rmdir('a');
         });
 
-        it('should throw when creating a directory fails', async () => {
-            expect(await isDirectory('i')).toBe(false);
-            await mkdirt(fix('i/j/k'));
-            expect(await isDirectory(fix('i/j/k'))).toBe(true);
-            await chmod(fix('i/j/k'), 0o555);
-            await expect(mkdirt(fix('i/j/k/x'))).rejects.toThrow();
-            await rmdir(fix('i/j/k'));
-            await rmdir(fix('i/j'));
-            await rmdir('i');
-        });
+        if (process.platform !== 'win32') {
+            it('should throw when creating a directory fails', async () => {
+                expect(await isDirectory('i')).toBe(false);
+                await mkdirt(fix('i/j/k'));
+                expect(await isDirectory(fix('i/j/k'))).toBe(true);
+                await chmod(fix('i/j/k'), 0o555);
+                await expect(mkdirt(fix('i/j/k/x'))).rejects.toThrow();
+                await rmdir(fix('i/j/k'));
+                await rmdir(fix('i/j'));
+                await rmdir('i');
+            });
+        }
 
         afterAll(() => {
             process.chdir(pwd);
@@ -103,16 +105,18 @@ describe('mkdirt', () => {
             await rmdir(tmp + fix('/a'));
         });
 
-        it('should throw when creating a directory fails', async () => {
-            expect(await isDirectory(tmp + fix('/i'))).toBe(false);
-            await mkdirt(tmp + fix('/i/j/k'));
-            expect(await isDirectory(tmp + fix('/i/j/k'))).toBe(true);
-            await chmod(tmp + fix('/i/j/k'), 0o555);
-            await expect(mkdirt(tmp + fix('/i/j/k/x'))).rejects.toThrow();
-            await rmdir(tmp + fix('/i/j/k'));
-            await rmdir(tmp + fix('/i/j'));
-            await rmdir(tmp + fix('/i'));
-        });
+        if (process.platform !== 'win32') {
+            it('should throw when creating a directory fails', async () => {
+                expect(await isDirectory(tmp + fix('/i'))).toBe(false);
+                await mkdirt(tmp + fix('/i/j/k'));
+                expect(await isDirectory(tmp + fix('/i/j/k'))).toBe(true);
+                await chmod(tmp + fix('/i/j/k'), 0o555);
+                await expect(mkdirt(tmp + fix('/i/j/k/x'))).rejects.toThrow();
+                await rmdir(tmp + fix('/i/j/k'));
+                await rmdir(tmp + fix('/i/j'));
+                await rmdir(tmp + fix('/i'));
+            });
+        }
 
     });
 
