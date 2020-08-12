@@ -5,9 +5,8 @@ const { dirname } = require('path');
  * Constants
  */
 
-const VIABLE = 1 << 0;
-const READY = 1 << 1;
-const NOT_VIABLE = 0;
+const PROBE_OK = 1 << 0;
+const PROBE_DONE = 1 << 1;
 
 /**
  * Interface
@@ -24,11 +23,11 @@ async function mkdirt(path, mode) {
     if (parent !== path) {
         await mkdirt(parent, mode);
     }
-    const viability = await viable(path);
-    if ((viability & VIABLE) !== VIABLE) {
+    const result = await probe(path);
+    if (!(result & PROBE_OK)) {
         throw new Error('Cannot create directory tree');
     }
-    if ((viability & READY) !== READY) {
+    if (!(result & PROBE_DONE)) {
         await mkdirs(path, mode);
     }
 }
@@ -41,9 +40,7 @@ async function mkdirs(path, mode) {
     const { reject, resolve, promise } = defer();
     mkdir(path, mode, async function (error) {
         if (error !== null && typeof error === 'object') {
-            reject(new Error(
-                `Error creating directory "${path}": ${error.code}`
-            ));
+            reject(new Error(`Error creating directory "${path}": ${error.code}`));
         } else {
             resolve(true);
         }
@@ -51,18 +48,18 @@ async function mkdirs(path, mode) {
     return await promise;
 }
 
-async function viable(path) {
+async function probe(path) {
     const { resolve, promise } = defer();
     stat(path, function (error, stats) {
+        let result = 0;
         if (error !== null && typeof error === 'object') {
-            resolve(error.code === 'ENOENT' ? VIABLE : NOT_VIABLE);
-        } else {
-            resolve(
-                (stats.mode & constants.S_IFMT) === constants.S_IFDIR
-                    ? VIABLE | READY
-                    : NOT_VIABLE
-            );
+            if (error.code === 'ENOENT') {
+                result = PROBE_OK;
+            }
+        } else if ((stats.mode & constants.S_IFMT) === constants.S_IFDIR) {
+            result = PROBE_OK | PROBE_DONE;
         }
+        resolve(result);
     });
     return await promise;
 }
